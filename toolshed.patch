@@ -1,0 +1,54 @@
+diff -r 27485e1ea881 build/unix/Makefile
+--- a/build/unix/Makefile	Sun May 22 13:07:04 2016 +0200
++++ b/build/unix/Makefile	Sun Mar 14 18:44:33 2021 +0000
+@@ -3,7 +3,7 @@
+ 
+ vpath %.c ../../mamou:../../os9
+ 
+-PACKAGENAME	= toolshed-$(VERSION).tgz
++PACKAGENAME	= toolshed-$(VERSION).zip
+ ifneq ($(DESTDIR),)
+ INSTALLDIR	= $(DESTDIR)/usr/bin
+ DOCDIR		= $(DESTDIR)/usr/share/doc/toolshed
+@@ -19,15 +19,15 @@
+ 
+ install: all
+ 	$(INSTALL) -d $(INSTALLDIR) $(DOCDIR)
+-	$(INSTALL) ar2/ar2 os9/os9 mamou/mamou cecb/cecb decb/decb \
+-	    tocgen/tocgen makewav/makewav $(INSTALLDIR)
++	$(INSTALL) ar2/ar2.exe os9/os9.exe mamou/mamou.exe cecb/cecb.exe decb/decb.exe \
++	    tocgen/tocgen.exe makewav/makewav.exe $(INSTALLDIR)
+ 	-$(INSTALL) cocofuse/cocofuse $(INSTALLDIR)
+ 	$(INSTALL) -m 0644 doc/ToolShed.html $(DOCDIR)
+ 
+ package: INSTALLDIR=toolshed-$(VERSION)
+ package: DOCDIR = $(INSTALLDIR)
+ package: install
+-	tar czvf $(PACKAGENAME) toolshed-$(VERSION)
++	zip $(PACKAGENAME) toolshed-$(VERSION)
+ 	rm -rf toolshed-$(VERSION)
+ 
+ clean:
+diff -r 27485e1ea881 build/unix/rules.mak
+--- a/build/unix/rules.mak	Sun May 22 13:07:04 2016 +0200
++++ b/build/unix/rules.mak	Sun Mar 14 18:44:33 2021 +0000
+@@ -9,12 +9,16 @@
+ MAKE		= make
+ CFLAGS		= -Dunix -DUNIX -O3 -I. -g -I../../../include -Wall -DTOOLSHED_VERSION=\"$(VERSION)\" -D_FILE_OFFSET_BITS=64
+ ASM		= rma
+-AR		= $(CROSS)ar
+-RANLIB		= $(CROSS)ranlib
+-CC		= $(CROSS)cc
++#AR		= $(CROSS)ar
++#RANLIB		= $(CROSS)ranlib
++#CC		= $(CROSS)cc
+ 
+ %.l: %.r
+ 	$(MERGE) $< > $@
+ 
+ %.r: %.a
+ 	$(ASM) $< -o=$@
++
++%.o: %.c
++	$(CC) $(CFLAGS) -c $^ -o $@
++

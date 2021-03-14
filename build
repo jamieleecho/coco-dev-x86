@@ -1,0 +1,30 @@
+#/bin/bash
+
+# Perform needed updates
+# apt-get update -y
+# apt-get install apt-utils mercurial -y
+
+# Build the docker file
+docker build -t jamieleecho/coco-x86-builder .
+docker run --rm jamieleecho/coco-x86-builder > ./coco-x86-builder
+chmod a+x coco-x86-builder
+
+# Pull toolshed and patch
+hg clone http://hg.code.sf.net/p/toolshed/code toolshed-code
+cd toolshed-code
+hg update v2_2
+hg patch --no-commit ../toolshed.patch
+
+# Build toolshed
+../coco-x86-builder -i jamieleecho/coco-x86-builder bash -c '(cd build/unix/ && make package --no-builtin-rules)'
+cp build/unix/toolshed-2.2.zip ..
+cd ..
+
+# Pull lwtools
+curl -o lwtools.tar.gz http://www.lwtools.ca/releases/lwtools/lwtools-4.18.tar.gz
+tar -zxpvf lwtools.tar.gz
+patch -s -p0 < lwtools.patch
+cd lwtools-4.18
+../coco-x86-builder -i jamieleecho/coco-x86-builder make package PACKAGE_VERSION=4.18 PROGSUFFIX=.exe
+cp lwtools-4.18.zip ..
+cd ..
