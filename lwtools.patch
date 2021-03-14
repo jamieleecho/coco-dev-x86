@@ -1,6 +1,6 @@
-diff -ruN lwtools-4.18.orig/Makefile lwtools-4.18/Makefile
---- lwtools-4.18.orig/Makefile	2021-03-14 15:09:47.000000000 -0400
-+++ lwtools-4.18/Makefile	2021-03-14 15:10:08.000000000 -0400
+diff -ruN lwtools-4.18/Makefile lwtools-4.18.safe/Makefile
+--- lwtools-4.18/Makefile	2021-01-19 21:08:37.000000000 -0500
++++ lwtools-4.18.safe/Makefile	2021-03-14 15:56:54.000000000 -0400
 @@ -49,10 +49,7 @@
  MAIN_TARGETS := lwasm/lwasm$(PROGSUFFIX) \
  	lwlink/lwlink$(PROGSUFFIX) \
@@ -18,7 +18,7 @@ diff -ruN lwtools-4.18.orig/Makefile lwtools-4.18/Makefile
  all: $(MAIN_TARGETS)
  
 +package: $(MAIN_TARGETS)
-+	zip lwtools-$(PACKAGE_VERSION).zip $^
++	zip -j lwtools-$(PACKAGE_VERSION).zip $^
 +
  lwar_srcs := add.c extract.c list.c lwar.c main.c remove.c replace.c
  lwar_srcs := $(addprefix lwar/,$(lwar_srcs))
